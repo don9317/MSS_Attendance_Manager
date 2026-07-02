@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MSS Attendance & Arrival Manager v4.2</title>
+<title>MSS Attendance & Arrival Manager v4.3</title>
 <style>
 :root{--navy:#0f2742;--blue:#1f6feb;--soft:#f4f7fb;--card:#fff;--line:#d8e0ea;--muted:#667085;--green:#16a34a;--red:#dc2626;--orange:#f59e0b;--purple:#7c3aed}
 *{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--soft);color:#172033}.app{display:flex;min-height:100vh}.side{width:280px;background:var(--navy);color:#fff;padding:22px 18px;position:sticky;top:0;height:100vh}.brand{font-size:22px;font-weight:800;margin-bottom:4px}.sub{opacity:.78;font-size:13px;margin-bottom:24px}.nav button{display:block;width:100%;border:0;background:transparent;color:#dce8f8;text-align:left;padding:13px 12px;border-radius:12px;font-weight:700;margin:4px 0;cursor:pointer}.nav button.active,.nav button:hover{background:#183a60;color:#fff}.content{flex:1;padding:22px;max-width:1250px;margin:0 auto}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.title h1{margin:0;font-size:26px;color:var(--navy)}.title p{margin:4px 0 0;color:var(--muted)}.pill{display:inline-flex;align-items:center;gap:7px;background:#eaf2ff;color:#174ea6;border:1px solid #cfe0ff;padding:9px 12px;border-radius:999px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}.tile,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 7px 18px rgba(15,39,66,.06)}.tile{padding:16px}.tile .label{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase}.tile .num{font-size:30px;font-weight:900;margin-top:4px;color:var(--navy)}.card{padding:16px;margin-bottom:16px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.between{justify-content:space-between}.field{display:flex;flex-direction:column;gap:6px;margin:8px 0}.field label{font-size:12px;font-weight:800;color:#344054;text-transform:uppercase}.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:15px;background:#fff}.btn{border:0;background:var(--blue);color:white;font-weight:800;padding:11px 14px;border-radius:11px;cursor:pointer}.btn.secondary{background:#eef4ff;color:#174ea6;border:1px solid #cfe0ff}.btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.orange{background:var(--orange)}.btn:disabled{opacity:.45;cursor:not-allowed}.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}.person{padding:14px;border:1px solid var(--line);border-radius:15px;background:#fff;position:relative}.person.checked{border-color:#86efac;background:#f0fdf4}.person.blocked{border-color:#fed7aa;background:#fff7ed}.name{font-weight:900;font-size:17px;color:var(--navy)}.meta{color:var(--muted);font-size:13px;margin:4px 0 10px}.badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.badge{font-size:11px;font-weight:900;padding:5px 7px;border-radius:999px;background:#eef2ff;color:#3730a3}.badge.public{background:#dbeafe;color:#1d4ed8}.badge.swarm{background:#dcfce7;color:#166534}.badge.warn{background:#ffedd5;color:#9a3412}.badge.good{background:#dcfce7;color:#166534}.badge.bad{background:#fee2e2;color:#991b1b}.small{font-size:12px;color:var(--muted)}table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}th,td{border-bottom:1px solid var(--line);padding:11px;text-align:left;font-size:14px}th{background:#f8fafc;color:#344054;text-transform:uppercase;font-size:12px}.hidden{display:none}.notice{border-left:5px solid var(--blue);background:#f8fbff;padding:12px;border-radius:12px;color:#344054}.modal{position:fixed;inset:0;background:rgba(15,39,66,.58);display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal.show{display:flex}.modalbox{background:#fff;border-radius:18px;max-width:620px;width:100%;padding:18px}.sig{height:80px;border:1px dashed #98a2b3;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#667085;background:#f9fafb}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.footer{font-size:12px;color:#667085;text-align:center;padding:18px}@media(max-width:850px){.app{display:block}.side{position:relative;width:100%;height:auto}.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.top{display:block}.content{padding:14px}.list{grid-template-columns:1fr}}
@@ -18,7 +18,7 @@
 <div class="top"><div class="title"><h1 id="activityTitle">Skills Clinic Check-In</h1><p>Real MSS + LeagueApps CSV import, QR-ready check-in, waiver status, homework, communications, attendance export.</p></div><div class="pill" id="datePill"></div></div>
 <section id="checkin" class="tab">
 <div class="grid"><div class="tile"><div class="label">Registered</div><div class="num" id="kRegistered">0</div></div><div class="tile"><div class="label">Checked In</div><div class="num" id="kChecked">0</div></div><div class="tile"><div class="label">Needs Waiver</div><div class="num" id="kWaiver">0</div></div><div class="tile"><div class="label">Homework Done</div><div class="num" id="kHomework">0</div></div></div>
-<div class="card"><div class="row between"><div class="row"><select id="sessionFilter"><option value="all">All Sessions</option><option>Beginner 5:30-6:30</option><option>Intermediate 6:30-7:30</option></select><select id="typeFilter"><option value="all">All Types</option><option value="Swarm">Swarm</option><option value="Public">Public</option></select></div><div class="row"><input id="scanInput" placeholder="Scan/enter QR or member ID"/><button class="btn green" onclick="scanCode()">Scan</button></div></div><div class="field"><input id="search" placeholder="Search player, parent, team..." oninput="render()"></div><div id="scanMsg" class="notice hidden"></div></div>
+<div class="card"><div class="row between"><div class="row"><select id="sessionFilter"><option value="all">All Sessions</option><option>Beginner 5:30-6:30</option><option>Intermediate 6:30-7:30</option></select><select id="typeFilter"><option value="all">All Types</option><option value="Swarm">Swarm</option><option value="Public">Public</option></select></div><div class="row"><input id="scanInput" placeholder="Scan/enter QR or member ID"/><button class="btn green" onclick="scanCode()">Scan</button><button class="btn secondary" onclick="clearFilters()">Clear Filters</button></div></div><div class="field"><input id="search" placeholder="Search player, parent, team..." oninput="render()"></div><div id="filterMsg" class="notice hidden"></div><div id="scanMsg" class="notice hidden"></div></div>
 <div class="list" id="peopleList"></div>
 </section>
 <section id="admin" class="tab hidden"><div class="card"><h2>Upload Rosters / Registrations</h2><p class="small">Upload MSS public registration CSV and LeagueApps/Swarm CSV. The app recognizes common columns like name, player, parent, email, phone, team, session, waiver, paid, qr, member id.</p><div class="two"><div class="field"><label>MSS Public Registrations</label><input type="file" id="mssFile" accept=".csv"><button class="btn" onclick="loadCsv('mss')">Upload MSS CSV</button></div><div class="field"><label>LeagueApps / Swarm Players</label><input type="file" id="swarmFile" accept=".csv"><button class="btn" onclick="loadCsv('swarm')">Upload Swarm CSV</button></div></div><div class="row"><button class="btn secondary" onclick="loadSample()">Load Sample Data</button><button class="btn red" onclick="clearAll()">Clear All</button></div></div><div class="card"><h2>Imported Participants</h2><div id="importTable"></div></div></section>
@@ -149,14 +149,33 @@ function mergePeople(data){
   save();
 }
 function save(){localStorage.setItem('mss_people_v2',JSON.stringify(people));localStorage.setItem('mss_settings_v2',JSON.stringify(settings));localStorage.setItem('mss_attendance_history_v4',JSON.stringify(attendanceHistory));}
+function sessionMatches(personSession, filterValue){
+  if(filterValue==='all') return true;
+  const ps=(personSession||'').toLowerCase();
+  const fv=(filterValue||'').toLowerCase();
+  // Allows real MSS values like "Beginner Skills" or "Intermediate Skills" to match the display filters.
+  if(fv.includes('beginner')) return ps.includes('beginner');
+  if(fv.includes('intermediate')) return ps.includes('intermediate');
+  return ps===fv;
+}
+function clearFilters(){
+  if($('sessionFilter')) $('sessionFilter').value='all';
+  if($('typeFilter')) $('typeFilter').value='all';
+  if($('search')) $('search').value='';
+  render();
+}
 function render(){
   $('activityTitle').textContent=settings.name;$('activityName').value=settings.name;$('activityType').value=settings.type;$('rulePaid').checked=settings.paid;$('ruleWaiver').checked=settings.waiver;$('ruleHomework').checked=settings.homework;
   let q=($('search')?.value||'').toLowerCase(),sf=$('sessionFilter')?.value||'all',tf=$('typeFilter')?.value||'all';
-  let view=people.filter(p=>(sf==='all'||p.session===sf)&&(tf==='all'||p.type===tf)&&(`${p.name} ${p.parent} ${p.team} ${p.email}`.toLowerCase().includes(q)));
-  // Top dashboard tiles should reflect the full loaded roster, not only the current search/session filters.
-  // This fixes the issue where players could be checked in but the tally still showed 0 when a filter/search was active.
+  let view=people.filter(p=>sessionMatches(p.session,sf)&&(tf==='all'||p.type===tf)&&(`${p.name} ${p.parent} ${p.team} ${p.email} ${p.phone} ${p.session}`.toLowerCase().includes(q)));
+  // Top dashboard tiles reflect the full loaded roster, while the card list reflects current filters.
   $('kRegistered').textContent=people.length;$('kChecked').textContent=people.filter(p=>p.checked).length;$('kWaiver').textContent=people.filter(p=>!p.waiver).length;$('kHomework').textContent=people.filter(p=>p.homework).length;
-  $('peopleList').innerHTML=view.map(card).join('')||'<div class="card">No participants loaded yet. Go to Admin Upload and upload your real MSS / LeagueApps CSVs.</div>';
+  const msg=$('filterMsg');
+  if(msg){
+    if(people.length && view.length===0){msg.classList.remove('hidden');msg.textContent=`${people.length} participants are loaded, but none match the current filters/search. Try All Sessions / All Types or Clear Filters.`;}
+    else {msg.classList.add('hidden');msg.textContent='';}
+  }
+  $('peopleList').innerHTML=view.map(card).join('') || (people.length?'<div class="card">No matching participants. Clear filters or search again.</div>':'<div class="card">No participants loaded yet. Go to Admin Upload and upload your real MSS / LeagueApps CSVs.</div>');
   renderTables();renderComm();renderTracker();
 }
 function card(p){
