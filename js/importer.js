@@ -1,57 +1,24 @@
-function personFrom(row,typeHint){
-  const format=detectFormat(row,typeHint);
-  let type=typeHint==='swarm'?'Swarm':'Public';
-  let name='', parent='', email='', phone='', team='', session='', paid='', waiver=false, activity='', id='';
-  if(format==='MSS Public Registration'){
-    type='Public';
-    activity=key(row,['name','activity','event','camp']);
-    name=key(row,['playerOrTeamName','player team name','participant name','player name','name']);
-    parent=[key(row,['userFirstName','parent first name','first name']), key(row,['userLastName','parent last name','last name'])].filter(Boolean).join(' ');
-    email=key(row,['userEmailAddress','user email address','email','parent email']);
-    phone=phoneClean(key(row,['userPhoneNumber','user phone number','phone','parent phone']));
-    const price=key(row,['price','discountedPrice','amount']);
-    paid=price!=='' ? `Paid $${price}` : 'Paid';
-    session=sessionFromMssName(activity);
-    waiver=/yes|complete|signed|accepted/i.test(key(row,['waiver','waiver signed','waiver status','waiver acceptance date']));
-    id=key(row,['registrationId','reservationId','id','qr','code']) || `MSS-${activity}-${name}`.replace(/[^A-Z0-9]+/gi,'-').toUpperCase();
-  } else if(format==='LeagueApps Swarm Roster'){
-    type='Swarm';
-    name=[key(row,['First Name','firstName','player first name']), key(row,['Last Name','lastName','player last name'])].filter(Boolean).join(' ');
-    parent=key(row,['Parent 1 First Name','Parent First Name','Guardian First Name','parent']);
-    email=key(row,['Parent 1 Email','Parent Email','Guardian Email','Email']);
-    phone=phoneClean(key(row,['Parent 1 Mobile Number','Parent Mobile Number','Guardian Phone','phone']));
-    team=key(row,['Team','Team Name','Division']);
-    paid='Included';
-    session='Swarm Skills / Team Assigned';
-    waiver=!!key(row,['Waiver Acceptance Date','Waiver Accepted','Waiver Signed','Waiver']);
-    id=key(row,['Member ID','Player ID','ID','QR']) || `SWARM-${team}-${name}`.replace(/[^A-Z0-9]+/gi,'-').toUpperCase();
-  } else {
-    type=typeHint==='swarm'?'Swarm':'Public';
-    name=key(row,['name','player name','participant name']) || [key(row,['first name']),key(row,['last name'])].filter(Boolean).join(' ');
-    parent=key(row,['parent','guardian','parent name']); email=key(row,['email','parent email']); phone=phoneClean(key(row,['phone','parent phone'])); team=key(row,['team']); session=key(row,['session'])||'Unassigned'; paid=key(row,['paid','payment status'])||''; waiver=/yes|complete|signed|accepted/i.test(key(row,['waiver','waiver status'])); id=key(row,['id','qr','code'])||`${type}-${name}`.replace(/[^A-Z0-9]+/gi,'-').toUpperCase();
-  }
-  if(!name) name='Unnamed Participant';
-  return {id,name,type,team,session,parent,email,phone,paid,waiver,checked:false,homework:false,source:format,notes:''};
+function normalizeRow(row,type){
+  const isSwarm=type==='swarm';
+  const player= isSwarm ? pick(row,['player name','name','participant','child','first name']) : pick(row,['playerOrTeamName','player/team name','participant','player name','attendee','child name']);
+  const first=pick(row,['firstName','first name','player first name','userFirstName']); const last=pick(row,['lastName','last name','player last name','userLastName']);
+  const name= player || [first,last].filter(Boolean).join(' ') || pick(row,['name']);
+  const parent=[pick(row,['userFirstName','parent first name','guardian first name']),pick(row,['userLastName','parent last name','guardian last name'])].filter(Boolean).join(' ') || pick(row,['parent','guardian','contact']);
+  const team=pick(row,['team','team name','division','group','roster']);
+  const email=pick(row,['userEmailAddress','email','parent email','guardian email']);
+  const phone=pick(row,['userPhoneNumber','phone','parent phone','guardian phone','mobile']);
+  const className=pick(row,['name','activity','class','event','program']);
+  let session=pick(row,['session','time','group']);
+  if(!session && /beginner/i.test(className)) session=settings.sessions[0]||'Beginner 5:30-6:30';
+  if(!session && /intermediate/i.test(className)) session=settings.sessions[1]||'Intermediate 6:30-7:30';
+  if(!session) session=isSwarm?'Eligible Any Session':(className||'Registered');
+  const waiverText=pick(row,['waiver','waiver status','signed waiver']);
+  const paidText=pick(row,['paid','payment','paid status','status','price']);
+  const p={type:isSwarm?'Swarm':'Public',name,parent,email,phone,team:team||'',session,source:isSwarm?'LeagueApps':'MSS',checked:false,arrival:'',homework:false,waiver:/yes|signed|complete|true|current/i.test(waiverText),paid:isSwarm?true:!(/unpaid|failed|pending/i.test(paidText)),qr:pick(row,['qr','qr code','registration id','id','order id']),memberId:pick(row,['member id','memberId','player id','athlete id'])};
+  if(!p.qr && !isSwarm) p.qr='MSS-'+makeId(p).slice(0,18).toUpperCase();
+  if(!p.memberId && isSwarm) p.memberId='SWARM-'+makeId(p).slice(0,18).toUpperCase();
+  p.id=makeId(p); return p;
 }
-function loadCsv(type){
-  let input=$(type==='mss'?'mssFile':'swarmFile');
-  if(!input.files[0])return alert('Choose a CSV first.');
-  let reader=new FileReader();
-  reader.onload=e=>{
-    let rows=parseCSV(e.target.result);
-    let data=rows.map(r=>personFrom(r,type));
-    mergePeople(data);
-    alert(`Imported ${data.length} records from ${data[0]?.source||'CSV'}.`);
-    render();
-  };
-  reader.readAsText(input.files[0]);
-}
-function mergePeople(data){
-  data.forEach(p=>{
-    let i=people.findIndex(x=>x.id===p.id || (x.name.toLowerCase()===p.name.toLowerCase() && x.type===p.type));
-    if(i>=0) people[i]={...people[i],...p,checked:people[i].checked,homework:people[i].homework,waiver:people[i].waiver||p.waiver};
-    else people.push(p);
-  });
-  save();
-}
-function save(){localStorage.setItem('mss_people_v2',JSON.stringify(people));localStorage.setItem('mss_settings_v2',JSON.stringify(settings));localStorage.setItem('mss_attendance_history_v4',JSON.stringify(attendanceHistory));}
+function mergePeople(newOnes){const map=new Map(people.map(p=>[p.id,p]));newOnes.forEach(n=>{if(!n.name)return; if(map.has(n.id)) Object.assign(map.get(n.id),n,map.get(n.id)); else map.set(n.id,n);});people=[...map.values()].sort((a,b)=>a.name.localeCompare(b.name));save();renderAll();}
+function loadCsv(kind){const inp=kind==='mss'?$('mssFile'):$('swarmFile');if(!inp.files[0]){alert('Choose a CSV first.');return;}const r=new FileReader();r.onload=()=>mergePeople(parseCSV(r.result).map(row=>normalizeRow(row,kind)));r.readAsText(inp.files[0]);}
+function clearAll(){if(confirm('Clear all loaded participants and history from this browser?')){people=[];history=[];save();renderAll();}}

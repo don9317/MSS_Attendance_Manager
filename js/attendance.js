@@ -1,14 +1,13 @@
-function check(id){let p=people.find(x=>x.id===id);if(!p)return;if(settings.waiver&&!p.waiver&&!p.checked){openWaiver(id);return;}p.checked=!p.checked;if(p.checked)recordAttendance(p);else removeTodayAttendance(p);save();render();}
-function hw(id){let p=people.find(x=>x.id===id);p.homework=!p.homework;save();render();}
-function scanCode(){let v=$('scanInput').value.trim().toLowerCase();let p=people.find(x=>x.id.toLowerCase()===v||x.name.toLowerCase()===v);let msg=$('scanMsg');msg.classList.remove('hidden');if(!p){msg.textContent='No matching participant found.';return;} if(settings.waiver&&!p.waiver){msg.textContent=`${p.name} found — waiver required before final check-in.`;openWaiver(p.id);return;}p.checked=true;recordAttendance(p);save();msg.textContent=`✓ ${p.name} checked in.`;$('scanInput').value='';render();}
-function todayKey(){return new Date().toISOString().slice(0,10)}
-function recordAttendance(p){
-  const date=todayKey();
-  const exists=attendanceHistory.some(r=>r.date===date && r.id===p.id && r.activity===(settings.name||''));
-  if(!exists) attendanceHistory.push({date,activity:settings.name||'',activityType:settings.type||'',id:p.id,name:p.name,type:p.type,team:p.team||'',session:p.session||'',homework:p.homework?'Yes':'No',waiver:p.waiver?'Yes':'No'});
-}
-function removeTodayAttendance(p){
-  const date=todayKey();
-  attendanceHistory=attendanceHistory.filter(r=>!(r.date===date && r.id===p.id && r.activity===(settings.name||'')));
-}
-function attendanceFor(p){return attendanceHistory.filter(r=>r.id===p.id || (r.name||'').toLowerCase()===p.name.toLowerCase())}
+function recordHistory(p){history.push({date:today(),time:p.arrival||nowTime(),name:p.name,type:p.type,team:p.team,session:p.session,homework:p.homework,waiver:p.waiver,source:p.source});}
+function toggleCheck(id){const p=people.find(x=>x.id===id);if(!p)return;if(!p.checked && settings.ruleWaiver && !p.waiver){startWaiver(id);return;}p.checked=!p.checked;p.arrival=p.checked&&settings.ruleArrival?nowTime():'';if(p.checked)recordHistory(p);save();renderAll();}
+function toggleHomework(id){const p=people.find(x=>x.id===id);if(!p)return;p.homework=!p.homework;save();renderAll();}
+function findByCode(raw){const code=low(raw);if(!code)return null;return people.find(x=>low(x.qr)===code||low(x.memberId)===code||low(x.id)===code||normPhone(x.phone)===normPhone(code)||low(raw).includes(low(x.qr))&&x.qr||low(raw).includes(low(x.memberId))&&x.memberId);}
+function processScannedCode(raw,source='manual'){const p=findByCode(raw);$('scanMsg').classList.remove('hidden');if(!p){$('scanMsg').innerHTML='<b>Not found.</b> Use manual search or add the participant as a walk-in.';showScanToast('NOT REGISTERED','Use manual search or walk-in entry.','red');return null;}const wasChecked=p.checked;$('scanMsg').innerHTML=`<b>Found:</b> ${p.name} (${p.type})`;if(!p.checked)toggleCheck(p.id);if(settings.ruleWaiver&&!p.waiver){showScanToast('ACTION REQUIRED',`${p.name}<br>Waiver missing - signature required.`,'yellow');}else{showScanToast(wasChecked?'ALREADY CHECKED IN':'WELCOME, '+p.name,`${p.session||settings.activityName}<br>${p.arrival||nowTime()}`,'green');}return p;}
+function scanCode(){const raw=$('scanInput').value;if(!clean(raw))return;processScannedCode(raw,'manual');$('scanInput').value='';}
+function exportCsv(kind){let rows=[];if(kind==='practiceBridge'){rows=people.filter(p=>p.type==='Swarm').map(p=>({Date:today(),Player:p.name,Team:p.team,Session:p.session,SkillsPresent:p.checked?'Yes':'No',Arrival:p.arrival,Homework:p.homework?'Yes':'No',Waiver:p.waiver?'Yes':'No'}));}
+else if(kind==='waivers'){rows=people.map(p=>({Date:today(),Player:p.name,Type:p.type,Team:p.team,Waiver:p.waiver?'Complete':'Missing',Guardian:p.guardian||'',WaiverDate:p.waiverDate||''}));}
+else{rows=people.map(p=>({Date:today(),Player:p.name,Type:p.type,Team:p.team,Session:p.session,CheckedIn:p.checked?'Yes':'No',Arrival:p.arrival,Homework:p.homework?'Yes':'No',Waiver:p.waiver?'Yes':'No',Email:p.email,Phone:p.phone}));}
+const header=Object.keys(rows[0]||{Date:'',Player:''});download(`${kind}-${today()}.csv`,[header.join(','),...rows.map(r=>header.map(h=>csvEscape(r[h])).join(','))].join('\n'));}
+function renderReports(){const div=$('reportSummary');if(!div)return;div.innerHTML=`<table><tr><th>Metric</th><th>Count</th></tr><tr><td>Total loaded</td><td>${people.length}</td></tr><tr><td>Checked in</td><td>${people.filter(p=>p.checked).length}</td></tr><tr><td>Swarm checked in</td><td>${people.filter(p=>p.type==='Swarm'&&p.checked).length}</td></tr><tr><td>Public checked in</td><td>${people.filter(p=>p.type==='Public'&&p.checked).length}</td></tr><tr><td>Missing waiver</td><td>${people.filter(p=>!p.waiver).length}</td></tr></table>`;}
+function exportHistory(){const header=['date','time','name','type','team','session','homework','waiver','source'];download(`attendance-history-${today()}.csv`,[header.join(','),...history.map(r=>header.map(h=>csvEscape(r[h])).join(','))].join('\n'));}
+function importHistory(){const f=$('historyFile').files[0];if(!f)return;const r=new FileReader();r.onload=()=>{history=history.concat(parseCSV(r.result));save();renderAll();};r.readAsText(f);}

@@ -1,7 +1,6 @@
-let people=JSON.parse(localStorage.getItem('mss_people_v2')||'[]');
-let attendanceHistory=JSON.parse(localStorage.getItem('mss_attendance_history_v4')||'[]');
-let settings=JSON.parse(localStorage.getItem('mss_settings_v2')||'{"name":"MSS Attendance & Arrival Manager","type":"Skills Clinic","paid":true,"waiver":true,"homework":true}');
-let currentWaiverId=null;
-const $=id=>document.getElementById(id);
-$('datePill').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric',year:'numeric'});
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden');render();});
+const LS='mss_att_mgr_v12_';
+let people=JSON.parse(localStorage.getItem(LS+'people')||'[]');
+let history=JSON.parse(localStorage.getItem(LS+'history')||'[]');
+let settings=JSON.parse(localStorage.getItem(LS+'settings')||'null')||{activityName:'Wednesday Skills Check-In',activityType:'Skills Clinic',sessions:['Beginner 5:30-6:30','Intermediate 6:30-7:30'],srcPublic:true,srcSwarm:true,methodQR:false,methodMembership:true,methodManual:true,ruleWaiver:true,ruleHomework:true,ruleArrival:true,ruleSwarmEligible:true};
+let waiverTarget=null, sigCanvas=null, sigCtx=null, sigHasInk=false, drawing=false;
+function save(){localStorage.setItem(LS+'people',JSON.stringify(people));localStorage.setItem(LS+'history',JSON.stringify(history));localStorage.setItem(LS+'settings',JSON.stringify(settings));}

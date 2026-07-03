@@ -1,40 +1,10 @@
-function sessionMatches(personSession, filterValue){
-  if(filterValue==='all') return true;
-  const ps=(personSession||'').toLowerCase();
-  const fv=(filterValue||'').toLowerCase();
-  // Allows real MSS values like "Beginner Skills" or "Intermediate Skills" to match the display filters.
-  if(fv.includes('beginner')) return ps.includes('beginner');
-  if(fv.includes('intermediate')) return ps.includes('intermediate');
-  return ps===fv;
-}
-function clearFilters(){
-  if($('sessionFilter')) $('sessionFilter').value='all';
-  if($('typeFilter')) $('typeFilter').value='all';
-  if($('search')) $('search').value='';
-  render();
-}
-function render(){
-  $('activityTitle').textContent=settings.name;$('activityName').value=settings.name;$('activityType').value=settings.type;$('rulePaid').checked=settings.paid;$('ruleWaiver').checked=settings.waiver;$('ruleHomework').checked=settings.homework;
-  let q=($('search')?.value||'').toLowerCase(),sf=$('sessionFilter')?.value||'all',tf=$('typeFilter')?.value||'all';
-  let view=people.filter(p=>sessionMatches(p.session,sf)&&(tf==='all'||p.type===tf)&&(`${p.name} ${p.parent} ${p.team} ${p.email} ${p.phone} ${p.session}`.toLowerCase().includes(q)));
-  // Top dashboard tiles reflect the full loaded roster, while the card list reflects current filters.
-  $('kRegistered').textContent=people.length;$('kChecked').textContent=people.filter(p=>p.checked).length;$('kWaiver').textContent=people.filter(p=>!p.waiver).length;$('kHomework').textContent=people.filter(p=>p.homework).length;
-  const msg=$('filterMsg');
-  if(msg){
-    if(people.length && view.length===0){msg.classList.remove('hidden');msg.textContent=`${people.length} participants are loaded, but none match the current filters/search. Try All Sessions / All Types or Clear Filters.`;}
-    else {msg.classList.add('hidden');msg.textContent='';}
-  }
-  $('peopleList').innerHTML=view.map(card).join('') || (people.length?'<div class="card">No matching participants. Clear filters or search again.</div>':'<div class="card">No participants loaded yet. Go to Admin Upload and upload your real MSS / LeagueApps CSVs.</div>');
-  renderTables();renderComm();renderTracker();
-}
-function card(p){
-  let blocked=settings.waiver&&!p.waiver;
-  return `<div class="person ${p.checked?'checked':''} ${blocked?'blocked':''}"><div class="name">${p.name}</div><div class="meta">${p.session}${p.team?' · '+p.team:''}</div><div class="badges"><span class="badge ${p.type.toLowerCase()}">${p.type}</span><span class="badge ${p.waiver?'good':'warn'}">Waiver ${p.waiver?'OK':'Needed'}</span><span class="badge ${p.checked?'good':'bad'}">${p.checked?'Checked In':'Not In'}</span>${settings.homework?`<span class="badge ${p.homework?'good':'warn'}">HW ${p.homework?'Done':'Pending'}</span>`:''}</div><div class="small">Parent: ${p.parent||'—'}<br>${p.phone?`<a href="sms:${p.phone}">Text</a> · `:''}${p.email?`<a href="mailto:${p.email}">Email</a>`:''}<br>QR/ID: ${p.id}<br>Source: ${p.source}</div><br><div class="row"><button class="btn ${p.checked?'secondary':'green'}" onclick="check('${p.id}')">${p.checked?'Undo':'Check In'}</button>${!p.waiver?`<button class="btn orange" onclick="openWaiver('${p.id}')">Sign Waiver</button>`:''}${settings.homework?`<button class="btn secondary" onclick="hw('${p.id}')">HW</button>`:''}</div></div>`;
-}
-function renderTables(){
-  let rows=people.map(p=>`<tr><td>${p.name}</td><td>${p.type}</td><td>${p.session}</td><td>${p.team||''}</td><td>${p.checked?'Yes':'No'}</td><td>${p.waiver?'Yes':'No'}</td><td>${p.source||''}</td></tr>`).join('');
-  $('importTable').innerHTML=`<table><tr><th>Name</th><th>Type</th><th>Session</th><th>Team</th><th>Checked</th><th>Waiver</th><th>Source</th></tr>${rows}</table>`;
-  $('waiverTable').innerHTML=`<table><tr><th>Name</th><th>Type</th><th>Waiver</th><th>Action</th></tr>${people.map(p=>`<tr><td>${p.name}</td><td>${p.type}</td><td>${p.waiver?'Complete':'Needed'}</td><td>${!p.waiver?`<button class="btn orange" onclick="openWaiver('${p.id}')">Sign</button>`:''}</td></tr>`).join('')}</table>`;
-  $('homeworkTable').innerHTML=`<table><tr><th>Name</th><th>Type</th><th>Session</th><th>Homework</th></tr>${people.map(p=>`<tr><td>${p.name}</td><td>${p.type}</td><td>${p.session}</td><td><button class="btn secondary" onclick="hw('${p.id}')">${p.homework?'Complete':'Pending'}</button></td></tr>`).join('')}</table>`;
-  $('reportSummary').innerHTML=`<table><tr><th>Metric</th><th>Count</th></tr><tr><td>Total</td><td>${people.length}</td></tr><tr><td>Public</td><td>${people.filter(p=>p.type==='Public').length}</td></tr><tr><td>Swarm</td><td>${people.filter(p=>p.type==='Swarm').length}</td></tr><tr><td>Checked In</td><td>${people.filter(p=>p.checked).length}</td></tr><tr><td>Waivers Needed</td><td>${people.filter(p=>!p.waiver).length}</td></tr></table>`;
-}
+function setupTabs(){document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden');renderAll();});}
+function applySettingsToUI(){ $('activityTitle').textContent=settings.activityName; $('datePill').textContent=new Date().toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'}); $('setActivityName').value=settings.activityName; $('setActivityType').value=settings.activityType; $('setSession1').value=settings.sessions[0]||''; $('setSession2').value=settings.sessions[1]||''; ['srcPublic','srcSwarm','methodQR','methodMembership','methodManual','ruleWaiver','ruleHomework','ruleArrival','ruleSwarmEligible'].forEach(id=>{if($(id)) $(id).checked=!!settings[id];}); $('scanPanel').classList.toggle('hidden',!(settings.methodQR||settings.methodMembership)); const sf=$('sessionFilter'); const old=sf.value; sf.innerHTML='<option value="all">All Sessions</option>'+settings.sessions.filter(Boolean).map(s=>`<option>${s}</option>`).join('')+'<option>Eligible Any Session</option>'; if([...sf.options].some(o=>o.value===old))sf.value=old;}
+function saveSettings(){settings.activityName=clean($('setActivityName').value)||'MSS Attendance';settings.activityType=$('setActivityType').value;settings.sessions=[$('setSession1').value,$('setSession2').value].map(clean).filter(Boolean);['srcPublic','srcSwarm','methodQR','methodMembership','methodManual','ruleWaiver','ruleHomework','ruleArrival','ruleSwarmEligible'].forEach(id=>settings[id]=!!$(id).checked);save();applySettingsToUI();renderAll();alert('Setup saved.');}
+function resetSettings(){localStorage.removeItem(LS+'settings');location.reload();}
+function personCard(p){const needs=settings.ruleWaiver&&!p.waiver;return `<div class="person ${p.checked?'checked':''} ${needs?'blocked':''}"><div class="name">${p.name||'(No name)'}</div><div class="meta">${p.type}${p.team?' • '+p.team:''}${p.session?' • '+p.session:''}</div><div class="badges"><span class="badge ${p.type==='Swarm'?'swarm':'public'}">${p.type}</span>${p.checked?`<span class="badge good">Checked ${p.arrival||''}</span>`:'<span class="badge neutral">Not checked</span>'}${p.waiver?'<span class="badge good">Waiver</span>':'<span class="badge warn">Needs Waiver</span>'}${p.homework?'<span class="badge good">Homework</span>':''}${p.type==='Swarm'?'<span class="badge swarm">Skills Eligible</span>':''}</div><div class="small">Parent: ${p.parent||'—'}<br>Email: ${p.email||'—'}<br>Phone: ${p.phone||'—'}</div><div class="row" style="margin-top:10px"><button class="btn ${p.checked?'secondary':'green'}" onclick="toggleCheck('${p.id}')">${p.checked?'Undo':'Check In'}</button><button class="btn secondary" onclick="toggleHomework('${p.id}')">Homework</button><button class="btn secondary" onclick="startWaiver('${p.id}')">Waiver</button></div></div>`}
+function renderPeople(){const v=visiblePeople();$('peopleList').innerHTML=v.map(personCard).join('')||'';$('filterMsg').classList.toggle('hidden',!!v.length||!people.length);$('filterMsg').textContent=people.length?'No participants match the current filters. Try Clear Filters.':'No participants loaded yet.';}
+function renderKpis(){ $('kRegistered').textContent=people.length; $('kChecked').textContent=people.filter(p=>p.checked).length; $('kWaiver').textContent=people.filter(p=>!p.waiver).length; $('kHomework').textContent=people.filter(p=>p.homework).length;}
+function renderTables(){const rows=people.slice(0,300).map(p=>`<tr><td>${p.name}</td><td>${p.type}</td><td>${p.team||''}</td><td>${p.session||''}</td><td>${p.email||''}</td><td>${p.phone||''}</td></tr>`).join('');$('importTable').innerHTML=`<table><tr><th>Name</th><th>Type</th><th>Team</th><th>Session</th><th>Email</th><th>Phone</th></tr>${rows}</table>`;$('waiverTable').innerHTML=`<table><tr><th>Name</th><th>Type</th><th>Status</th><th>Action</th></tr>${people.map(p=>`<tr><td>${p.name}</td><td>${p.type}</td><td>${p.waiver?'Complete':'Missing'}</td><td><button class="btn secondary" onclick="startWaiver('${p.id}')">Open</button></td></tr>`).join('')}</table>`;$('homeworkTable').innerHTML=`<table><tr><th>Name</th><th>Type</th><th>Team</th><th>Homework</th><th>Action</th></tr>${people.map(p=>`<tr><td>${p.name}</td><td>${p.type}</td><td>${p.team}</td><td>${p.homework?'Complete':'Pending'}</td><td><button class="btn secondary" onclick="toggleHomework('${p.id}')">Toggle</button></td></tr>`).join('')}</table>`;}
+function clearFilters(){$('sessionFilter').value='all';$('typeFilter').value='all';$('statusFilter').value='all';$('search').value='';renderAll();}
+function renderAll(){applySettingsToUI();renderKpis();renderPeople();renderTables();renderComm();renderTracker();renderReports();}

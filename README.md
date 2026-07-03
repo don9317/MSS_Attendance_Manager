@@ -1,45 +1,36 @@
-# MSS Attendance Manager v1.0
+# MSS Attendance Manager v1.2
 
-A modular GitHub Pages application for My Sport Space attendance, arrival management, communications, homework tracking, waiver completion, and Swarm/team attendance reporting.
+Modular GitHub Pages version of MSS Attendance Manager.
 
-## Included
+## New in v1.2
 
-- Real MSS public registration CSV importer
-- LeagueApps / Swarm player CSV importer
-- Manual check-in and QR/member-ID ready check-in
-- Electronic waiver workflow with required agreement checkbox and touch/mouse signature pad
-- Homework tracking
-- Communications tab for email/text lists
-- Individual attendance tracker
-- Swarm team attendance summary for coaches
-- Attendance, waiver, contact, and practice-bridge exports
-- Local browser storage with history export/import
+- Browser camera QR scanner using the device camera when supported
+- USB scanner/manual scan input remains available
+- Green/yellow/red scan result workflow
+- Two-second welcome confirmation after successful check-in
+- Optional scanning stays configurable; manual search remains always available
+- Swarm membership card / member ID lookup supported
+- MSS registration QR / registration code lookup supported
 
-## GitHub Pages setup
+## Upload to GitHub
 
-1. Upload the **contents** of this folder, not the ZIP and not the enclosing folder.
-2. Confirm `index.html` is visible at the repository root.
-3. Go to **Settings → Pages**.
-4. Set Source to **Deploy from a branch**.
-5. Set Branch to **main** and Folder to **/(root)**.
+Upload the contents of this folder to the root of the repository:
 
-## Folder structure
+- index.html
+- README.md
+- assets/
+- css/
+- js/
+- samples/
 
-```text
-index.html
-css/styles.css
-js/state.js
-js/utils.js
-js/importer.js
-js/ui.js
-js/attendance.js
-js/waiver.js
-js/tracker.js
-js/communications.js
-js/sample-data.js
-js/main.js
-samples/
-assets/
-```
+Do not upload the ZIP itself and do not upload the enclosing folder as a folder inside the repo.
 
-This static version does not send emails/texts directly. It opens the user's email app or copies contact lists. Future MSS integration can add direct messaging, hosted waiver records, QR code generation, and live MSS registration/waiver lookup.
+## Scanner Notes
+
+The camera scanner uses the browser BarcodeDetector API where available. It works best in current Chrome/Edge on Android, Windows, and many tablets. If the browser does not support camera QR scanning, use the scan input box with a USB scanner or manual search.
+
+GitHub Pages Settings:
+
+- Source: Deploy from a branch
+- Branch: main
+- Folder: / (root)

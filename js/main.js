@@ -1,4 +1,2 @@
-// Application bootstrapping
-setupSignaturePad();
-renderComm();
-render();
+function boot(){setupTabs();applySettingsToUI();renderAll();}
+document.addEventListener('DOMContentLoaded',boot);

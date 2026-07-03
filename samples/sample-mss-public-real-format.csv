@@ -1,27 +1,3 @@
-"name","playerOrTeamName","signedupOn","price","membershipDiscount","discountedPrice","discountCode","discount","userFirstName","userLastName","userEmailAddress","userPhoneNumber","coachFirstName","coachLastName","coachPhoneNumber","coachEmailAddress"
-"Beginner Skills","Jack Myer","2026-06-23 10:43 pm","10.00",,,,,"Sabrina","Huitt","sabrinaweisspa@gmail.com","14052078502",,,,
-"Beginner Skills","Luke Eaton","2026-06-24 4:38 pm","10.00",,,,,"Molly","Eaton","mollyeaton7@yahoo.com","14053154776",,,,
-"Beginner Skills","Carter Kirk","2026-06-24 3:28 pm","10.00",,,,,"Elizabeth","McCarthy","elizabethmc1519@gmail.com","15722399942",,,,
-"Beginner Skills","Charlie Thomas ","2026-06-24 12:23 pm","10.00",,,,,"Tanisha ","Thomas ","missmac75@gmail.com","1405-476-3505 ",,,,
-"Beginner Skills","Blake Dozier","2026-06-24 4:03 pm","10.00",,,,,"Corey","Dozier","me@coreydozier.com","14056380013",,,,
-"Intermediate Skills","Lakeland Alvarez","2026-06-24 3:11 pm","10.00",,,,,"Laynie","Alvarez","laynielou28@gmail.com","4058125300",,,,
-"Intermediate Skills","Prayden presley ","2026-06-24 5:01 pm","10.00",,,,,"Brooke","Presley","brooke.r.presley@gmail.com","14056069716",,,,
-"Beginner Skills","Amaya Garrett","2026-06-24 3:34 pm","10.00",,,,,"Zaib","Garrett","zaibgarrett@gmail.com","14055900393",,,,
-"Beginner Skills","Maria Pioszak ","2026-06-24 1:22 pm","10.00",,,,,"Yukiko","Pioszak","yukko711@hotmail.com","14054647102",,,,
-"Intermediate Skills","Dallas Granger","2026-06-21 7:37 pm","10.00",,,,,"Hailey","Harris","grangerfamilyokc@gmail.com","15125892005",,,,
-"Intermediate Skills","Price Presley ","2026-06-24 5:00 pm","10.00",,,,,"Brooke","Presley","brooke.r.presley@gmail.com","14056069716",,,,
-"Beginner Skills","Luke Brown","2026-06-09 12:00 pm","10.00",,,,,"Annette","Brown","brown2711@cox.net","14052270769",,,,
-"Beginner Skills","Cyree","2026-06-24 5:10 pm","10.00",,,,,"Chin","Wells","cywmjj2381@gmail.com","15712392434",,,,
-"Beginner Skills","Isaac Tran","2026-06-24 1:00 pm","10.00",,,,,"Phuong","Nguyen","phuongng9388@gmail.com","14052194992",,,,
-"Beginner Skills","Stephen ","2026-06-23 10:34 am","10.00",,,,,"Oluwabukola","Olayode","Justbuky4ever@gmail.com","14059163062",,,,
-"Beginner Skills","Ryder Gilsleider ","2026-06-24 10:10 am","10.00",,,,,"Laura","Gilsleider","laura.gilsleider@gmail.com","14058206040",,,,
-"Beginner Skills","Vincent Kerber","2026-05-13 4:47 pm","10.00",,,,,"William","Kerber III","mk@wkcontact.com","14058886838",,,,
-"Beginner Skills","Kensho Pioszak ","2026-06-24 1:21 pm","10.00",,,,,"Yukiko","Pioszak","yukko711@hotmail.com","14054647102",,,,
-"Intermediate Skills","Everett","2026-06-24 5:44 pm","10.00",,,,,"KIM","FERGUSON","kimberlykferguson@gmail.com","14059904076",,,,
-"Beginner Skills","Evelyn Crane","2026-06-23 4:18 pm","10.00",,,,,"Evelyn","Crane","davoncrane@gmail.com","14054350762",,,,
-"Beginner Skills","Emma Silvy","2026-06-24 3:45 pm","10.00",,,,,"Crystal","Ewertz","Crystal.ewertz@gmail.com","14052090799","Crystal","Ewertz","14052090799","Crystal.ewertz@gmail.com"
-"Beginner Skills","Isaac Hartwig","2026-06-21 8:28 am","10.00",,,,,"Chalette","Hartwig","chaletteh@gmail.com","14053439897",,,,
-"Beginner Skills","Erika Pioszak","2026-06-24 1:21 pm","10.00",,,,,"Yukiko","Pioszak","yukko711@hotmail.com","14054647102",,,,
-"Beginner Skills","Hamza Shalaby","2026-06-23 11:18 pm","10.00",,,,,"HAMED","SHALABY","hamednagy121212@gmail.com","14057579991",,,,
-"Intermediate Skills","Evelyn Crane","2026-06-23 4:18 pm","10.00",,,,,"Evelyn","Crane","davoncrane@gmail.com","14054350762",,,,
-"Intermediate Skills","Eli Kyllingstad ","2026-06-23 11:18 pm","10.00",,,,,"Jeni ","Kyllingstad ","jeni.kyllingstad@gmail.com","14052260417",,,,
+name,playerOrTeamName,price,userFirstName,userLastName,userEmailAddress,userPhoneNumber
+Beginner Skills,Jack Myer,10,Sarah,Myer,sarah@example.com,405-555-1001
+Intermediate Skills,Cameran Cochran,10,Amy,Cochran,amy@example.com,405-555-1002
