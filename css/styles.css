@@ -10,3 +10,13 @@
 #waiverModal .modalbox>.row.between:last-child{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding-top:12px;margin-top:12px;z-index:2;}
 @media(max-height:760px){.waiverText{max-height:105px}.sig{height:92px}.modalbox{padding:14px}#waiverModal h2{margin-top:0;margin-bottom:8px}.field{margin:6px 0}}
 @media(max-width:850px){.modal{padding:10px}.modalbox{max-height:calc(100dvh - 20px)}#waiverModal .modalbox>.row.between:last-child{display:flex;gap:8px;flex-wrap:nowrap}#waiverModal .modalbox>.row.between:last-child .btn{flex:1;padding:11px 8px;font-size:13px}}
+
+
+/* v1.2.2 stronger waiver modal fix: fixed footer plus scrollable body for laptops/tablets */
+#waiverModal{align-items:center;justify-content:center;overflow:hidden;padding:10px;}
+#waiverModal .waiverBox{width:min(680px,100%);max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);display:flex;flex-direction:column;overflow:hidden;margin:0;padding:0;}
+#waiverModal .waiverBody{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 18px 10px;}
+#waiverModal .waiverFooter{flex:0 0 auto;display:flex;justify-content:space-between;gap:10px;padding:12px 18px;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 12px rgba(15,39,66,.08);}
+#waiverModal .waiverFooter .btn{min-width:0;}
+@media(max-height:760px){#waiverModal .waiverBody{padding:12px 14px 8px}.waiverText{max-height:90px}.sig{height:82px}#waiverModal h2{margin:0 0 8px}.readyBox{padding:9px}.agreementBox{padding:9px;margin-top:7px}.field{margin:5px 0}}
+@media(max-width:850px){#waiverModal{padding:8px}#waiverModal .waiverBox{max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px)}#waiverModal .waiverFooter{padding:10px 12px}#waiverModal .waiverFooter .btn{flex:1;padding:11px 8px;font-size:13px}.sigTools{display:block}.sigTools .btn{margin-top:8px;width:100%}}

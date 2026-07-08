@@ -1,4 +1,4 @@
-# MSS Attendance Manager v1.2.1
+# MSS Attendance Manager v1.2.2
 
 Modular GitHub Pages version of MSS Attendance Manager.
 
@@ -36,6 +36,10 @@ GitHub Pages Settings:
 - Folder: / (root)
 
 
-## v1.2.1 Update
+## v1.2.2 Update
 - Fixed waiver modal scrolling on laptop/tablet screens so Complete Waiver & Check In stays reachable.
 - Added sticky waiver action bar at the bottom of the waiver window.
+
+
+## v1.2.2
+- Stronger electronic waiver modal fix: scrollable waiver body with fixed action buttons for laptops and tablets.
