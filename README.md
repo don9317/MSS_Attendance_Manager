@@ -1,52 +1,18 @@
-# MSS Attendance Manager v1.2.3.3
+# MSS Attendance Manager v1.2.4 - Source Filter Fix
 
-Modular GitHub Pages version of MSS Attendance Manager.
+## What changed
+- Public / Swarm source filter now updates the check-in list immediately.
+- Session filter applies to Public registrations only.
+- Swarm players are eligible for either Skills session because they do not pre-register weekly.
+- When a Swarm player is checked in, the currently selected session is recorded as that player's check-in session.
+- Added clearer helper text for front desk volunteers.
 
-## New in v1.2.3
-
-- Browser camera QR scanner using the device camera when supported
-- USB scanner/manual scan input remains available
-- Green/yellow/red scan result workflow
-- Two-second welcome confirmation after successful check-in
-- Optional scanning stays configurable; manual search remains always available
-- Swarm membership card / member ID lookup supported
-- MSS registration QR / registration code lookup supported
-
-## Upload to GitHub
-
-Upload the contents of this folder to the root of the repository:
-
+## Upload instructions
+Extract the ZIP, then upload the contents of the folder to GitHub:
 - index.html
 - README.md
-- assets/
 - css/
 - js/
 - samples/
 
-Do not upload the ZIP itself and do not upload the enclosing folder as a folder inside the repo.
-
-## Scanner Notes
-
-The camera scanner uses the browser BarcodeDetector API where available. It works best in current Chrome/Edge on Android, Windows, and many tablets. If the browser does not support camera QR scanning, use the scan input box with a USB scanner or manual search.
-
-GitHub Pages Settings:
-
-- Source: Deploy from a branch
-- Branch: main
-- Folder: / (root)
-
-
-## v1.2.3.3 Update
-- Fixed waiver modal scrolling on laptop/tablet screens so Complete Waiver & Check In stays reachable.
-- Added sticky waiver action bar at the bottom of the waiver window.
-
-
-## v1.2.3.3
-- Stronger electronic waiver modal fix: scrollable waiver body with fixed action buttons for laptops and tablets.
-
-
-## v1.2.3 Waiver Options
-- Added waiver requirement toggle.
-- Waivers can be required for Public participants, Swarm players, both, or neither.
-- Swarm defaults to waiver not required because Swarm waivers are normally completed during program registration.
-- Missing waiver counts now only include participants for whom waivers are required.
+Do not upload the ZIP itself.

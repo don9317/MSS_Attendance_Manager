@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MSS Attendance Manager v1.2.3.3</title>
+<title>MSS Attendance Manager v1.2.4</title>
 <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
 <div class="app">
   <aside class="side">
     <div class="brand">MSS Attendance</div>
-    <div class="sub">Manager v1.2.3.3</div>
+    <div class="sub">Manager v1.2.4</div>
     <div class="nav">
       <button class="active" data-tab="checkin">Today Check-In</button>
       <button data-tab="admin">Admin Upload</button>
@@ -36,10 +36,10 @@
         <div class="tile"><div class="label">Homework Done</div><div class="num" id="kHomework">0</div></div>
       </div>
       <div class="card">
-        <div class="row between"><div class="row"><select id="sessionFilter"></select><select id="typeFilter"><option value="all">All Types</option><option value="Swarm">Swarm</option><option value="Public">Public</option></select><select id="statusFilter"><option value="all">All Statuses</option><option value="checked">Checked In</option><option value="notchecked">Not Checked In</option><option value="waiver">Needs Waiver</option></select></div><div class="row"><button class="btn secondary" onclick="clearFilters()">Clear Filters</button></div></div>
+        <div class="row between"><div class="row"><select id="sessionFilter" onchange="renderAll()"></select><select id="typeFilter" onchange="renderAll()"><option value="all">All Sources</option><option value="Swarm">Swarm</option><option value="Public">Public</option></select><select id="statusFilter" onchange="renderAll()"><option value="all">All Statuses</option><option value="checked">Checked In</option><option value="notchecked">Not Checked In</option><option value="waiver">Needs Waiver</option></select></div><div class="row"><button class="btn secondary" onclick="clearFilters()">Clear Filters</button></div></div>
         <div class="scanPanel" id="scanPanel"><div class="field"><label>Optional QR / Membership Scan</label><div class="row"><input id="scanInput" placeholder="Scan, paste, or enter QR/member ID"/><button class="btn green" onclick="scanCode()">Scan / Find</button><button class="btn secondary" onclick="openScanner()">📷 Open Camera Scanner</button></div><div class="small">Use a phone/tablet camera, laptop webcam, USB scanner, or manual entry. Search by name remains available below.</div></div></div>
         <div class="field"><label>Manual Lookup</label><input id="search" placeholder="Search player, parent, phone, team..." oninput="renderAll()"></div>
-        <div id="filterMsg" class="notice hidden"></div><div id="scanMsg" class="notice hidden"></div>
+        <div class="small" id="filterHelp">Tip: Ask Public or Swarm first. Session filtering applies to Public registrations; Swarm players are eligible for any Skills session and the selected session is recorded at check-in.</div><div id="filterMsg" class="notice hidden"></div><div id="scanMsg" class="notice hidden"></div>
       </div>
       <div class="list" id="peopleList"></div>
     </section>
