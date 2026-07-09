@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MSS Attendance Manager v1.2</title>
+<title>MSS Attendance Manager v1.2.3.3</title>
 <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
 <div class="app">
   <aside class="side">
     <div class="brand">MSS Attendance</div>
-    <div class="sub">Manager v1.2</div>
+    <div class="sub">Manager v1.2.3.3</div>
     <div class="nav">
       <button class="active" data-tab="checkin">Today Check-In</button>
       <button data-tab="admin">Admin Upload</button>
@@ -58,7 +58,7 @@
         <div class="two"><div class="field"><label>Default Session 1</label><input id="setSession1" value="Beginner 5:30-6:30"></div><div class="field"><label>Default Session 2</label><input id="setSession2" value="Intermediate 6:30-7:30"></div></div>
         <h3>Roster Sources</h3><label><input type="checkbox" id="srcPublic" checked> MSS public registrations</label><br><label><input type="checkbox" id="srcSwarm" checked> Swarm/LeagueApps roster - eligible without weekly registration</label>
         <h3>Check-In Methods</h3><label><input type="checkbox" id="methodSearch" checked disabled> Search by name/phone/team - always available</label><br><label><input type="checkbox" id="methodQR"> Optional QR / registration code scanning</label><br><label><input type="checkbox" id="methodMembership" checked> Optional Swarm membership card/member ID scanning</label><br><label><input type="checkbox" id="methodManual" checked> Manual/walk-in entry fallback</label>
-        <h3>Rules</h3><label><input type="checkbox" id="ruleWaiver" checked> Require waiver before final check-in</label><br><label><input type="checkbox" id="ruleHomework" checked> Track homework</label><br><label><input type="checkbox" id="ruleArrival" checked> Track arrival time</label><br><label><input type="checkbox" id="ruleSwarmEligible" checked> Treat all loaded Swarm players as eligible for Skills unless marked inactive</label>
+        <h3>Rules</h3><label><input type="checkbox" id="ruleWaiver"> Enable waiver requirement for this activity</label><br><div style="margin:8px 0 8px 24px"><label><input type="checkbox" id="ruleWaiverPublic" checked> Require waivers for Public participants</label><br><label><input type="checkbox" id="ruleWaiverSwarm"> Require waivers for Swarm players</label><br><span class="small">For Swarm Skills, leave Swarm unchecked because Swarm waivers are already completed during program registration.</span></div><label><input type="checkbox" id="ruleHomework" checked> Track homework</label><br><label><input type="checkbox" id="ruleArrival" checked> Track arrival time</label><br><label><input type="checkbox" id="ruleSwarmEligible" checked> Treat all loaded Swarm players as eligible for Skills unless marked inactive</label>
         <div class="row"><button class="btn" onclick="saveSettings()">Save Setup</button><button class="btn secondary" onclick="resetSettings()">Reset Defaults</button></div>
       </div>
     </section>

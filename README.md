@@ -1,8 +1,8 @@
-# MSS Attendance Manager v1.2.2
+# MSS Attendance Manager v1.2.3.3
 
 Modular GitHub Pages version of MSS Attendance Manager.
 
-## New in v1.2
+## New in v1.2.3
 
 - Browser camera QR scanner using the device camera when supported
 - USB scanner/manual scan input remains available
@@ -36,10 +36,17 @@ GitHub Pages Settings:
 - Folder: / (root)
 
 
-## v1.2.2 Update
+## v1.2.3.3 Update
 - Fixed waiver modal scrolling on laptop/tablet screens so Complete Waiver & Check In stays reachable.
 - Added sticky waiver action bar at the bottom of the waiver window.
 
 
-## v1.2.2
+## v1.2.3.3
 - Stronger electronic waiver modal fix: scrollable waiver body with fixed action buttons for laptops and tablets.
+
+
+## v1.2.3 Waiver Options
+- Added waiver requirement toggle.
+- Waivers can be required for Public participants, Swarm players, both, or neither.
+- Swarm defaults to waiver not required because Swarm waivers are normally completed during program registration.
+- Missing waiver counts now only include participants for whom waivers are required.
