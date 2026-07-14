@@ -1,10 +1,24 @@
-function recordHistory(p){const rec=slotRecord(p);history.push({date:selectedDay(),time:rec?.arrival||nowTime(),name:p.name,type:p.type,team:p.team,session:selectedSession(),homework:p.homework,waiver:p.waiver,source:p.source});}
-function toggleCheck(id){const p=people.find(x=>x.id===id);if(!p)return;if(!isChecked(p)&&needsWaiver(p)){startWaiver(id);return;}const key=slotKey();p.attendance=p.attendance||{};if(isChecked(p,key)){delete p.attendance[key];}else{p.attendance[key]={checked:true,arrival:settings.ruleArrival?nowTime():'',homework:!!p.homework};recordHistory(p);}save();renderAll();}
-function toggleHomework(id){const p=people.find(x=>x.id===id);if(!p)return;p.homework=!p.homework;save();renderAll();}
-function findByCode(raw){const code=low(raw);if(!code)return null;return people.find(x=>low(x.qr)===code||low(x.memberId)===code||low(x.id)===code||normPhone(x.phone)===normPhone(code)||(x.qr&&low(raw).includes(low(x.qr)))||(x.memberId&&low(raw).includes(low(x.memberId))));}
-function processScannedCode(raw,source='manual'){const p=findByCode(raw);$('scanMsg').classList.remove('hidden');if(!p){$('scanMsg').innerHTML='<b>Not found.</b> Use manual search or add the participant as a walk-in.';showScanToast('NOT REGISTERED','Use manual search or walk-in entry.','red');return null;}const wasChecked=isChecked(p);$('scanMsg').innerHTML=`<b>Found:</b> ${p.name} (${p.type})`;if(!wasChecked)toggleCheck(p.id);if(needsWaiver(p)){showScanToast('ACTION REQUIRED',`${p.name}<br>Waiver missing - signature required.`,'yellow');}else{showScanToast(wasChecked?'ALREADY CHECKED IN':'WELCOME, '+p.name,`${selectedSession()}<br>${arrivalFor(p)||nowTime()}`,'green');}return p;}
-function scanCode(){const raw=$('scanInput').value;if(!clean(raw))return;processScannedCode(raw,'manual');$('scanInput').value='';}
-function exportCsv(kind){let rows=[];if(kind==='practiceBridge'){rows=people.filter(p=>p.type==='Swarm').map(p=>({Date:selectedDay(),Player:p.name,Team:p.team,Session:selectedSession(),SkillsPresent:isChecked(p)?'Yes':'No',Arrival:arrivalFor(p),Homework:p.homework?'Yes':'No',Waiver:p.waiver?'Yes':'No'}));}else if(kind==='waivers'){rows=people.map(p=>({Date:selectedDay(),Player:p.name,Type:p.type,Team:p.team,Waiver:p.waiver?'Complete':'Missing',Guardian:p.guardian||'',WaiverDate:p.waiverDate||''}));}else{rows=people.map(p=>({Date:selectedDay(),Player:p.name,Type:p.type,Team:p.team,Session:selectedSession(),CheckedIn:isChecked(p)?'Yes':'No',Arrival:arrivalFor(p),Homework:p.homework?'Yes':'No',Waiver:p.waiver?'Yes':'No',Email:p.email,Phone:p.phone}));}const header=Object.keys(rows[0]||{Date:'',Player:''});download(`${kind}-${selectedDay()}-${selectedSession().replace(/[^a-z0-9]+/gi,'-')}.csv`,[header.join(','),...rows.map(r=>header.map(h=>csvEscape(r[h])).join(','))].join('\n'));}
-function renderReports(){const div=$('reportSummary');if(!div)return;div.innerHTML=`<table><tr><th>Metric</th><th>Count</th></tr><tr><td>Event roster</td><td>${people.length}</td></tr><tr><td>Checked in — ${selectedDay()} / ${selectedSession()}</td><td>${people.filter(p=>isChecked(p)).length}</td></tr><tr><td>Swarm checked in</td><td>${people.filter(p=>p.type==='Swarm'&&isChecked(p)).length}</td></tr><tr><td>Public checked in</td><td>${people.filter(p=>p.type==='Public'&&isChecked(p)).length}</td></tr><tr><td>Missing required waiver</td><td>${people.filter(p=>needsWaiver(p)).length}</td></tr></table>`;}
-function exportHistory(){const header=['date','time','name','type','team','session','homework','waiver','source'];download(`attendance-history-${today()}.csv`,[header.join(','),...history.map(r=>header.map(h=>csvEscape(r[h])).join(','))].join('\n'));}
-function importHistory(){const f=$('historyFile').files[0];if(!f)return;const r=new FileReader();r.onload=()=>{history=history.concat(parseCSV(r.result));save();renderAll();};r.readAsText(f);}
+function normalizeRow(row,type){
+  const isSwarm=type==='swarm';
+  const player= isSwarm ? pick(row,['player name','name','participant','child','first name']) : pick(row,['playerOrTeamName','player/team name','participant','player name','attendee','child name']);
+  const first=pick(row,['firstName','first name','player first name','userFirstName']); const last=pick(row,['lastName','last name','player last name','userLastName']);
+  const name= player || [first,last].filter(Boolean).join(' ') || pick(row,['name']);
+  const parent=[pick(row,['userFirstName','parent first name','guardian first name']),pick(row,['userLastName','parent last name','guardian last name'])].filter(Boolean).join(' ') || pick(row,['parent','guardian','contact']);
+  const team=pick(row,['team','team name','division','group','roster']);
+  const email=pick(row,['userEmailAddress','email','parent email','guardian email']);
+  const phone=pick(row,['userPhoneNumber','phone','parent phone','guardian phone','mobile']);
+  const className=pick(row,['name','activity','class','event','program']);
+  let session=pick(row,['session','time','group']);
+  if(!session && /beginner/i.test(className)) session=settings.days[0]?.sessions[0]||'Beginner 5:30-6:30';
+  if(!session && /intermediate/i.test(className)) session=settings.days[0]?.sessions[1]||'Intermediate 6:30-7:30';
+  if(!session) session=isSwarm?'Eligible Any Session':(className||'Registered');
+  const waiverText=pick(row,['waiver','waiver status','signed waiver']);
+  const paidText=pick(row,['paid','payment','paid status','status','price']);
+  const p={type:isSwarm?'Swarm':'Public',name,parent,email,phone,team:team||'',session,source:isSwarm?(clean(settings.secondarySourceName)||'Other Source'):'MSS',checked:false,arrival:'',homework:false,waiver:/yes|signed|complete|true|current/i.test(waiverText),paid:isSwarm?true:!(/unpaid|failed|pending/i.test(paidText)),qr:pick(row,['qr','qr code','registration id','id','order id']),memberId:pick(row,['member id','memberId','player id','athlete id'])};
+  if(!p.qr && !isSwarm) p.qr='MSS-'+makeId(p).slice(0,18).toUpperCase();
+  if(!p.memberId && isSwarm) p.memberId='SWARM-'+makeId(p).slice(0,18).toUpperCase();
+  p.id=makeId(p); return p;
+}
+function mergePeople(newOnes){const map=new Map(people.map(p=>[p.id,p]));newOnes.forEach(n=>{if(!n.name)return; if(map.has(n.id)) Object.assign(map.get(n.id),n,map.get(n.id)); else map.set(n.id,n);});people=[...map.values()].sort((a,b)=>a.name.localeCompare(b.name));save();renderAll();}
+function loadCsv(kind){const inp=kind==='mss'?$('mssFile'):$('swarmFile');if(!inp.files[0]){alert('Choose a CSV first.');return;}const r=new FileReader();r.onload=()=>mergePeople(parseCSV(r.result).map(row=>normalizeRow(row,kind)));r.readAsText(inp.files[0]);}
+function clearAll(){if(confirm('Clear all loaded participants and history from this browser?')){people=[];history=[];save();renderAll();}}
